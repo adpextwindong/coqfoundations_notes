@@ -45,3 +45,15 @@ Fixpoint psum (x:N) (y:N) : N :=
   end.
 
 Compute (psum (S(z)) (S(z))).
+
+Require Coq.extraction.Extraction.
+Extraction Language Haskell.
+
+(* From Coq Require Import Init.Nat. *)
+
+Extraction "peano.hs" psum.
+Recursive Extraction psum.
+
+(* Require Import ZArith. 
+  Binary encoded Nats exist in the library
+*)
