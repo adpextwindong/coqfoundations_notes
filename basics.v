@@ -118,3 +118,39 @@ Proof. simpl. reflexivity. Qed.
 Example test_andb34: (andb3 true true false) = false.
 Proof. simpl. reflexivity. Qed.
 
+(* Types of an expression can be checked like this (similar to :t in ghci)*)
+
+Check true.
+
+Check negb.
+
+(* A more interesting type constructor *)
+
+Inductive rgb : Type := 
+  | red
+  | green
+  | blue.
+
+Inductive color : Type :=
+  | black
+  | white
+  | primary (p : rgb).
+
+(* We can then perform pattern matching on color in depth *)
+
+Definition monochrome (c: color) : bool :=
+  match c with
+  | black => true
+  | white => true
+  | primary p => false
+  end.
+
+Definition is_red (c: color) : bool :=
+  match c with
+  | black => false
+  | white => false
+  | primary red => true
+  | primary _ => false
+  end.
+
+(* Note that we can wild card on p in the color match*)
