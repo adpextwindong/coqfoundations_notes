@@ -1,4 +1,4 @@
 # coqfoundations_notes
-[https://softwarefoundations.cis.upenn.edu/](Software Foundations Volume 1 Logical Foundations by Benjamin Pierce)
+[Software Foundations Volume 1 Logical Foundations by Benjamin Pierce](https://softwarefoundations.cis.upenn.edu/)
 
-[http://adam.chlipala.net/cpdt/cpdt.pdf](Certified Programming with Dependent Types)
+[Certified Programming with Dependent Types](http://adam.chlipala.net/cpdt/cpdt.pdf)
