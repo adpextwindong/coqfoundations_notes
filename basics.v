@@ -154,3 +154,48 @@ Definition is_red (c: color) : bool :=
   end.
 
 (* Note that we can wild card on p in the color match*)
+
+(* Module Declaration *)
+Module Playground.
+  Definition b : rgb := blue.
+End Playground.
+
+Definition b : bool := true.
+
+(* rgb b is scoped to the name Playground *)
+Check Playground.b : rgb.
+Check b: bool.
+
+Module TuplePlayground.
+
+Inductive bit : Type :=
+  | B0
+  | B1.
+
+(* This is pretty much a tuple type *)
+Inductive nybble : Type :=
+  | bits (b0 b1 b2 b3 : bit).
+
+Check (bits B1 B0 B1 B0)
+  : nybble.
+
+(* Another example of pattern matching into a constructor *)
+
+Definition all_zero (nb : nybble) : bool :=
+  match nb with
+    | (bits B0 B0 B0 B0) => true
+    | (bits _ _ _ _) => false
+  end.
+
+Compute (all_zero (bits B1 B0 B1 B0)).
+
+Example allz1 : (all_zero (bits B1 B0 B1 B0)) = false.
+Proof. simpl. reflexivity. Qed.
+
+Example allz2 : (all_zero (bits B0 B0 B0 B0)) = true.
+Proof. simpl. reflexivity. Qed.
+
+End TuplePlayground.
+
+
+
