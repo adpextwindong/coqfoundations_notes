@@ -308,9 +308,44 @@ Proof.
   (* rewrite <- H. Can be used to change the rewrite direction *)
   reflexivity. Qed.
 
+(* Exercise *)
+
 Theorem plus_id_exercise : forall n m o : nat,
   n = m -> m = o -> n + m = m + o.
 
 Proof.
-  Admitted.
+  intros n m o.
+  intros Hn.
+  intros Ho.
+  rewrite -> Hn.
+  rewrite -> Ho.
+  reflexivity. Qed.
+
+
+(* Standard library proofs  *)
+
+Check mult_n_O.
+(* ===> forall n : nat, 0 = n * 0 *)
+Check mult_n_Sm.
+(* ===> forall n m : nat, n * m + n = n * S m *)
+
+Theorem mult_n_0_m_0 : forall p q: nat,
+  (p * 0) + (q * 0) = 0.
+
+Proof.
+  intros p q.
+  rewrite <- mult_n_O.
+  rewrite <- mult_n_O.
+  reflexivity. Qed.
+
+(* Exercise *)
+
+Theorem mult_n_1 : forall p : nat,
+  p * 1 = p.
+
+Proof.
+  intros p.
+  rewrite <- mult_n_Sm.
+  rewrite <- mult_n_O.
+  reflexivity. Qed.
 
