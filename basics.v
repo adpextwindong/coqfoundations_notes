@@ -197,5 +197,41 @@ Proof. simpl. reflexivity. Qed.
 
 End TuplePlayground.
 
+Module NatPlayground.
 
+Inductive nat : Type :=
+  | O
+  | S (n : nat).
+
+(* Interesting recursion on the structure of nat *)
+
+Fixpoint even (n: nat) : bool :=
+  match n with
+  | O => true
+  | S (O) => false
+  | S (S (n)) => even n
+end.
+
+Example even1 : (even (S(S(S(S(O)))))) = true.
+Proof. simpl. reflexivity. Qed.
+
+(* Consider the fact that we're peeling S off n in these*)
+Fixpoint plus (n m: nat) : nat :=
+  match n with
+  | O => m
+  | S (n') => S (plus n' m)
+end.
+
+Fixpoint mult (n m : nat) : nat :=
+  match n with
+  | O => O
+  | S n' => plus m (mult n' m)
+end.
+
+(*In this case its on power*)
+Fixpoint exp (base power : nat) : nat :=
+  match power with
+  | O => S O
+  | S p => mult base (exp base p)
+end.
 
