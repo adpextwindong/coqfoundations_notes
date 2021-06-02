@@ -235,3 +235,82 @@ Fixpoint exp (base power : nat) : nat :=
   | S p => mult base (exp base p)
 end.
 
+End NatPlayground.
+
+Fixpoint factorial (n : nat) : nat :=
+  match n with
+  | O => 1
+  | S n' => mult (S n') (factorial (n'))
+end.
+
+
+Example test_factorial1: (factorial 3) = 6.
+Proof. simpl. reflexivity. Qed.
+
+Example test_factorial2: (factorial 5) = (mult 10 12).
+Proof. simpl. reflexivity. Qed.
+
+(* Nested matching *)
+Fixpoint eqb (n m : nat) : bool :=
+  match n with
+  | O => match m with
+         | O => true
+         | S m' => false
+         end
+  | S n' => match m with
+            | O => false
+            | S m' => eqb n' m'
+            end
+  end.
+
+Fixpoint leb (n m : nat) : bool :=
+  match n with
+  | O => true
+  | S n' =>
+    match m with
+    | O => false
+    | S m' => leb n' m'
+    end
+  end.
+
+Notation "x => y" := (eqb x y) (at level 70) : nat_scope.
+Notation "x <=? y" := (leb x y) (at level 70) : nat_scope.
+
+Definition ltb (n m : nat) : bool :=
+  (leb n m) && (negb (eqb n m)).
+
+Example test_ltb1: (ltb 2 2) = false.
+Proof. simpl. reflexivity. Qed.
+Example test_ltb2: (ltb 2 4) = true.
+Proof. simpl. reflexivity. Qed.
+Example test_ltb3: (ltb 4 2) = false.
+Proof. simpl. reflexivity. Qed.
+
+(* Intros n handles the quantifier forall n and moves
+   n from the goal to the context of current assumptions
+ *)
+Theorem plus_O_n : forall n : nat, 0 + n = n.
+Proof.
+  intros n. reflexivity. Qed.
+
+Theorem plus_id_example : forall n m: nat,
+  n = m -> n + n = m + m.
+
+(* Proof by Rewriting *)
+Proof.
+  (*move both n and m into the context of assumptions*)
+  intros n m.
+  (* move the hypothesis into the context: *)
+  (* n = m from the theorem *)
+  intros H.
+  (* rewrite the goal using the hypothesis: *)
+  rewrite -> H.
+  (* rewrite <- H. Can be used to change the rewrite direction *)
+  reflexivity. Qed.
+
+Theorem plus_id_exercise : forall n m o : nat,
+  n = m -> m = o -> n + m = m + o.
+
+Proof.
+  Admitted.
+
