@@ -349,3 +349,77 @@ Proof.
   rewrite <- mult_n_O.
   reflexivity. Qed.
 
+(* Proof by Case Analysis *)
+
+(*
+Theorem plus_1_neq_0_firsttry : forall n : nat,
+  (n + 1) =? 0 = false.
+Proof.
+  intros n.
+  simpl. (* does nothing! *)
+Abort.
+*)
+
+(* eqb and + begin by performing a match on their first argument
+but this compound expression n+1 is unknown and can't be simplified *)
+
+(*Theorem plus_1_neq_0 : forall n : nat,
+    (n + 1) =? 0 = false.
+  Proof.
+    intros n. destruct n as [| n'] eqn:E/
+    - reflexivity.
+    - reflexivity. Qed. *)
+
+(* Destruct generates two subgoals for the cases where n = 0 and n = S n'.
+   We solve these seperately. *)
+
+Theorem negb_involutive : forall b: bool,
+  negb(negb b) = b.
+Proof.
+  intros b. destruct b eqn:E.
+  - reflexivity.
+  - reflexivity.
+Qed.
+
+(* No as clause is needed because no variable binding is needed *)
+(* The bullets '-' mark each subgoal case.*)
+
+Theorem andb_commutative : forall b c,
+  andb b c = andb c b.
+Proof.
+  intros b c.
+  destruct b.
+  - destruct c.
+    + reflexivity.
+    + reflexivity.
+  - destruct c.
+    + reflexivity.
+    + reflexivity.
+Qed.
+
+(* Braces can also be used around each case *)
+
+(*
+
+  - destruct...
+    { destruct...
+    }
+    { destruct...
+    }
+*)
+
+(* Exercise *)
+
+Lemma andb_tintro : forall a b : bool,
+  a && b = (true && a) && b.
+Proof.
+  intros a b.
+  destruct a.
+  - simpl. reflexivity.
+  - simpl. reflexivity. Qed.
+
+Theorem andb_true_elim2 : forall b c : bool,
+  andb b c = true -> c = true.
+Proof.
+(*TODO*)
+Admitted.
