@@ -418,8 +418,51 @@ Proof.
   - simpl. reflexivity.
   - simpl. reflexivity. Qed.
 
+(* How the book probably wants me to do it. *)
 Theorem andb_true_elim2 : forall b c : bool,
   andb b c = true -> c = true.
 Proof.
-(*TODO*)
-Admitted.
+  intros b c.
+  destruct b.
+  - simpl.
+    intro H.
+    rewrite <- H. reflexivity.
+  - simpl.
+    destruct c.
+    + reflexivity.
+    + intro H. rewrite -> H. reflexivity.
+  Show Proof.
+Qed.
+
+
+(* We can use tautology on false = true in the 4th branch*)
+Theorem andb_true_elim2_taut : forall b c : bool,
+  andb b c = true -> c = true.
+Proof.
+  intros b c.
+  destruct b.
+  - simpl.
+    intro H.
+    rewrite <- H. reflexivity.
+  - simpl.
+    destruct c.
+    + reflexivity.
+    + tauto.
+  Show Proof.
+Qed.
+
+(* https://www.seas.upenn.edu/~cis500/cis500-f14/sf/ProofObjects.html *)
+(* https://www.cs.cornell.edu/courses/cs3110/2018sp/a5/coq-tactics-cheatsheet.html *)
+(* Discriminate on false = true *)
+Theorem andb_true_elim2_discriminate : forall b c : bool,
+  andb b c = true -> c = true.
+Proof.
+  intros b c.
+  destruct b.
+  - simpl.
+    intro H.
+    rewrite <- H. reflexivity.
+  - simpl.
+    discriminate.
+  Show Proof.
+Qed.
