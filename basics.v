@@ -105,9 +105,9 @@ Proof. simpl. reflexivity. Qed.
 Example test_nandb4: (nandb true true) = false.
 Proof. simpl. reflexivity. Qed.
 
+(* Exercise 2 *)
 Definition andb3 (b1:bool) (b2:bool) (b3:bool) : bool :=
   (b1 && b2) && (b2 && b3).
-
 
 Example test_andb31: (andb3 true true true) = true.
 Proof. simpl. reflexivity. Qed.
@@ -126,7 +126,7 @@ Check negb.
 
 (* A more interesting type constructor *)
 
-Inductive rgb : Type := 
+Inductive rgb : Type :=
   | red
   | green
   | blue.
@@ -243,7 +243,7 @@ Fixpoint factorial (n : nat) : nat :=
   | S n' => mult (S n') (factorial (n'))
 end.
 
-
+(* Exercise 3*)
 Example test_factorial1: (factorial 3) = 6.
 Proof. simpl. reflexivity. Qed.
 
@@ -276,6 +276,7 @@ Fixpoint leb (n m : nat) : bool :=
 Notation "x => y" := (eqb x y) (at level 70) : nat_scope.
 Notation "x <=? y" := (leb x y) (at level 70) : nat_scope.
 
+(* Exercise 4 *)
 Definition ltb (n m : nat) : bool :=
   (leb n m) && (negb (eqb n m)).
 
@@ -308,8 +309,7 @@ Proof.
   (* rewrite <- H. Can be used to change the rewrite direction *)
   reflexivity. Qed.
 
-(* Exercise *)
-
+(* Exercise 5 *)
 Theorem plus_id_exercise : forall n m o : nat,
   n = m -> m = o -> n + m = m + o.
 
@@ -338,7 +338,7 @@ Proof.
   rewrite <- mult_n_O.
   reflexivity. Qed.
 
-(* Exercise *)
+(* Exercise 6 *)
 
 Theorem mult_n_1 : forall p : nat,
   p * 1 = p.
@@ -408,7 +408,7 @@ Qed.
     }
 *)
 
-(* Exercise *)
+(* Exercise 7*)
 
 Lemma andb_tintro : forall a b : bool,
   a && b = (true && a) && b.
