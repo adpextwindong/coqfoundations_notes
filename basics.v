@@ -273,8 +273,10 @@ Fixpoint leb (n m : nat) : bool :=
     end
   end.
 
+(*
 Notation "x => y" := (eqb x y) (at level 70) : nat_scope.
 Notation "x <=? y" := (leb x y) (at level 70) : nat_scope.
+*)
 
 (* Exercise 4 *)
 Definition ltb (n m : nat) : bool :=
@@ -466,3 +468,136 @@ Proof.
     discriminate.
   Show Proof.
 Qed.
+
+(* intros x y. destruct y as [|y] eqn:E. *)
+
+Theorem andb_true_elim2_SHORT : forall b c : bool,
+  andb b c = true -> c = true.
+Proof.
+  intros b c. destruct b as [|b].
+  - simpl.
+    intro H.
+    rewrite <- H. reflexivity.
+  - simpl. destruct c.
+    + reflexivity.
+    + intro H. rewrite -> H. reflexivity.
+  Show Proof.
+Qed.
+
+
+Require Import Coq.Arith.PeanoNat.
+Require Import Coq.Init.Datatypes.
+
+(*Exercise 8*)
+Theorem zero_nbeq_plus_1 : forall n : nat,
+  0 =? (n + 1) = false.
+Proof.
+  intros n. destruct n as [|n].
+  - reflexivity.
+  - reflexivity.
+Qed.
+
+Fixpoint plus' (n : nat) (m : nat) : nat :=
+  match n with
+  | O => m
+  | S n' => S (plus' n' m)
+  end.
+
+(* https://coq.inria.fr/refman/language/core/inductive.html#coq:cmd.Fixpoint *)
+
+(* Fixpoint defintions must be "decreasing" on some argument to ensure termination*)
+
+(* Exercise 9
+
+This recursive function should terminate and return either n if m is zero or 500.
+But because it doesn't decrease it gets rejected.
+
+Fixpoint fooBad (n : nat) (m : nat) : nat :=
+  match m with
+  | 500 => m
+  | O => n
+  | S m' => fooBad n (S (S m'))
+  end.
+*)
+
+(* Exercise 10 *)
+
+(* https://www.cs.cornell.edu/courses/cs3110/2018sp/a5/coq-tactics-cheatsheet.html *)
+(* Repeat tactic to apply rewrite -> H. multiple times *)
+Theorem identity_fn_applied_twice :
+  forall (f : bool -> bool),
+    (forall (x: bool), f x = x) -> forall (b: bool), f (f b) = b.
+Proof.
+  intros.
+  repeat rewrite -> H. reflexivity.
+Qed.
+
+(* Generalized to f being an endomorphism *)
+Theorem fixedpoint_twice :
+  forall (f: Type -> Type),
+    (forall (x :Type), f x = x) -> forall (y : Type), f (f y) = y.
+Proof.
+  intros.
+  repeat rewrite -> H. reflexivity.
+Qed.
+
+(* Showcase repeat being used to apply the f x = x hypothesis multiple times *)
+Example fixedpoint_three :
+  forall (f: Type -> Type),
+    (forall (x : Type), f x = x) -> forall (y : Type), f (f (f y)) = y.
+Proof.
+  intros.
+  repeat rewrite -> H. reflexivity.
+Qed.
+
+(* Exercise 11 *)
+Theorem negation_fn_applied_twice :
+  forall (f: bool -> bool),
+    (forall (x: bool), f x = negb x) ->
+    forall (b: bool), f (f b) = b.
+Proof.
+  intros f H b.
+  repeat rewrite -> H.
+  destruct b.
+  - simpl. reflexivity.
+  - simpl. reflexivity.
+Qed.
+
+(* Exercise 12 *)
+Theorem andb_eq_orb :
+  forall (b c : bool),
+  (andb b c = orb b c) -> b = c.
+Proof.
+  intros b.
+  destruct b.
+  - destruct c.
+    + simpl. reflexivity.
+    + simpl. intro H. rewrite -> H. reflexivity.
+  - destruct c.
+    + simpl. intro H. rewrite -> H. reflexivity.
+    + simpl. reflexivity.
+Qed.
+
+(* Exercise 13 *)
+Inductive bin: Type :=
+  | Z
+  | B0 (n : bin)
+  | B1 (n : bin).
+
+(*
+
+For example:
+        decimal               binary                          unary
+           0                       Z                              O
+           1                    B1 Z                            S O
+           2                B0 (B1 Z)                        S (S O)
+           3                B1 (B1 Z)                     S (S (S O))
+           4            B0 (B0 (B1 Z))                 S (S (S (S O)))
+           5            B1 (B0 (B1 Z))              S (S (S (S (S O))))
+           6            B0 (B1 (B1 Z))           S (S (S (S (S (S O)))))
+           7            B1 (B1 (B1 Z))        S (S (S (S (S (S (S O))))))
+           8        B0 (B0 (B0 (B1 Z)))    S (S (S (S (S (S (S (S O)))))))
+
+Note that the low-order bit is on the left and the high-order bit is on the right -- the opposite of the way binary numbers are usually written. This choice makes them easier to manipulate.
+*)
+
