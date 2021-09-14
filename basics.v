@@ -601,3 +601,22 @@ For example:
 Note that the low-order bit is on the left and the high-order bit is on the right -- the opposite of the way binary numbers are usually written. This choice makes them easier to manipulate.
 *)
 
+Fixpoint incr (m:bin) : bin
+  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint bin_to_nat (m:bin) : nat
+  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+
+Example test_bin_incr1 : (incr (B1 Z)) = B0 (B1 Z).
+(* FILL IN HERE *) Admitted.
+Example test_bin_incr2 : (incr (B0 (B1 Z))) = B1 (B1 Z).
+(* FILL IN HERE *) Admitted.
+Example test_bin_incr3 : (incr (B1 (B1 Z))) = B0 (B0 (B1 Z)).
+(* FILL IN HERE *) Admitted.
+Example test_bin_incr4 : bin_to_nat (B0 (B1 Z)) = 2.
+(* FILL IN HERE *) Admitted.
+Example test_bin_incr5 :
+        bin_to_nat (incr (B1 Z)) = 1 + bin_to_nat (B1 Z).
+(* FILL IN HERE *) Admitted.
+Example test_bin_incr6 :
+        bin_to_nat (incr (incr (B1 Z))) = 2 + bin_to_nat (B1 Z).
+(* FILL IN HERE *) Admitted.
