@@ -601,17 +601,53 @@ For example:
 Note that the low-order bit is on the left and the high-order bit is on the right -- the opposite of the way binary numbers are usually written. This choice makes them easier to manipulate.
 *)
 
-Fixpoint incr (m:bin) : bin
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint flippable (m : bin): bool :=
+  match m with
+  | Z => false
+  | B0 _ => true
+  | B1 n' => flippable n'
+  end.
+
+Fixpoint flopBits (m : bin) : bin :=
+  match m with
+  | Z => Z
+  | B1 Z => B1 Z
+  | B1 n' => B0 (flopBits n')
+  | B0 n' => B0 (flopBits n')
+  end.
+
+Fixpoint incr (m:bin) : bin :=
+  match m with
+  | Z => B1 Z
+  | B0 Z => B1 Z
+  | B1 Z => B0 (B1 Z)
+  | B0 n' => B1 n'
+  | B1 n' => match flippable m with
+             | true => B1 (incr n')
+             | false => B0 (flopBits n')
+             end
+  end.
+
+Compute (incr (incr (B1 Z)))
+.
 Fixpoint bin_to_nat (m:bin) : nat
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+  .
+Admitted.
 
 Example test_bin_incr1 : (incr (B1 Z)) = B0 (B1 Z).
-(* FILL IN HERE *) Admitted.
+Proof.
+  simpl. reflexivity.
+Qed.
+
 Example test_bin_incr2 : (incr (B0 (B1 Z))) = B1 (B1 Z).
-(* FILL IN HERE *) Admitted.
+Proof.
+  simpl. reflexivity.
+Qed.
+
 Example test_bin_incr3 : (incr (B1 (B1 Z))) = B0 (B0 (B1 Z)).
-(* FILL IN HERE *) Admitted.
+Proof.
+  simpl. reflexivity.
+
 Example test_bin_incr4 : bin_to_nat (B0 (B1 Z)) = 2.
 (* FILL IN HERE *) Admitted.
 Example test_bin_incr5 :
