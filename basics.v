@@ -601,13 +601,6 @@ For example:
 Note that the low-order bit is on the left and the high-order bit is on the right -- the opposite of the way binary numbers are usually written. This choice makes them easier to manipulate.
 *)
 
-Fixpoint flippable (m : bin): bool :=
-  match m with
-  | Z => false
-  | B0 _ => true
-  | B1 n' => flippable n'
-  end.
-
 Fixpoint flopBits (m : bin) : bin :=
   match m with
   | Z => Z
@@ -619,45 +612,39 @@ Fixpoint flopBits (m : bin) : bin :=
 Fixpoint allOnes (m : bin) : bool :=
   match m with
   | Z => true
-  | B0 Z => false
   | B1 Z => true
-  | B1 n' => true && allOnes n'
   | B0 _ => false
+  | B1 n' => true && allOnes n'
   end.
 
-Example test_allOnes_1 : allOnes (B0 (B1 Z)) = false.
-Proof.
-  simpl. reflexivity.
-Qed.
 
-Example test_AllOnes_2 : allOnes (B1 (B1 Z)) = true.
-Proof.
-  simpl. reflexivity.
-Qed.
+Fixpoint buildNBZeroes (n:nat) (tail : bin) : bin :=
+  match n with
+  | 0 => tail
+  | S n' => B0 (buildNBZeroes n' tail)
+end.
 
-Fixpoint incr (m:bin) : bin :=
+Compute buildNBZeroes 4 (B1 Z).
+
+Fixpoint seekForZeroFlipAndTail (m : bin) (seeked : nat) : bin :=
+  match m with
+  | Z => m
+  | B1 Z => m
+  | B0 Z => m
+  | B0 n' => buildNBZeroes seeked (B1 n')
+  | B1 n' => seekForZeroFlipAndTail n' (seeked + 1)
+end.
+
+Definition incr (m : bin) : bin :=
   match m with
   | Z => B1 Z
   | B0 Z => B1 Z
   | B1 Z => B0 (B1 Z)
-  | B0 n' => B1 n'
-  | B1 n' => match allOnes m with
-      | true => B0 (flopBits m)
-      | false => B1 (incr n')
+  | _ => match allOnes m with
+         | true => B0 (flopBits m)
+         | false => seekForZeroFlipAndTail m 0
       end
-  end.
-
-Compute allOnes (B1 (B1 Z)).
-
-Compute (incr (B1 Z)).
-Compute ((incr (incr (B1 Z))))
-.
-
-Compute ((incr (B1 (B1 Z)))).
-
-Fixpoint bin_to_nat (m:bin) : nat
-  .
-Admitted.
+end.
 
 Example test_bin_incr1 : (incr (B1 Z)) = B0 (B1 Z).
 Proof.
@@ -674,12 +661,28 @@ Proof.
   simpl. reflexivity.
 Qed.
 
-Example test_bin_incr4 : bin_to_nat (B0 (B1 Z)) = 2.
+Example test_bin_incr4 : incr (B1 (B0 (B1 Z))) = B0 (B1 (B1 Z)).
+Proof.
+  simpl. reflexivity.
+Qed.
+
+Example test_bin_incr5 : incr (B0 (B1 (B1 Z))) = B1 (B1 (B1 Z)).
+Proof. simpl. reflexivity. Qed.
+
+Example test_bin_incr6 : incr (B1 (B1 (B1 (B0 (B1 (B0 (B1 (Z)))))))) = B0 (B0 (B0 (B1 (B1 (B0 (B1 Z)))))).
+Proof. simpl. reflexivity. Qed.
+
+
+Fixpoint bin_to_nat (m:bin) : nat
+  .
+Admitted.
+
+Example test_bin_nat1 : bin_to_nat (B0 (B1 Z)) = 2.
 (* FILL IN HERE *) Admitted.
 
-Example test_bin_incr5 :
+Example test_bin_nat2 :
         bin_to_nat (incr (B1 Z)) = 1 + bin_to_nat (B1 Z).
 (* FILL IN HERE *) Admitted.
-Example test_bin_incr6 :
+Example test_bin_nat3 :
         bin_to_nat (incr (incr (B1 Z))) = 2 + bin_to_nat (B1 Z).
 (* FILL IN HERE *) Admitted.
