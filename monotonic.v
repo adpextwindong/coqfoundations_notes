@@ -14,3 +14,8 @@ Proof.
   - reflexivity.
   - apply Nat.lt_succ_diag_r.
 Qed.
+
+Check foo 5 > foo 4.
+
+Definition monotonic (f: nat -> nat) :=
+  forall x y, x <= y -> f x <= f y.
