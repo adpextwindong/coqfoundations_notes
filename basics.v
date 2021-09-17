@@ -616,20 +616,45 @@ Fixpoint flopBits (m : bin) : bin :=
   | B0 n' => B0 (flopBits n')
   end.
 
+Fixpoint allOnes (m : bin) : bool :=
+  match m with
+  | Z => true
+  | B0 Z => false
+  | B1 Z => true
+  | B1 n' => true && allOnes n'
+  | B0 _ => false
+  end.
+
+Example test_allOnes_1 : allOnes (B0 (B1 Z)) = false.
+Proof.
+  simpl. reflexivity.
+Qed.
+
+Example test_AllOnes_2 : allOnes (B1 (B1 Z)) = true.
+Proof.
+  simpl. reflexivity.
+Qed.
+
 Fixpoint incr (m:bin) : bin :=
   match m with
   | Z => B1 Z
   | B0 Z => B1 Z
   | B1 Z => B0 (B1 Z)
   | B0 n' => B1 n'
-  | B1 n' => match flippable m with
-             | true => B1 (incr n')
-             | false => B0 (flopBits n')
-             end
+  | B1 n' => match allOnes m with
+      | true => B0 (flopBits m)
+      | false => B1 (incr n')
+      end
   end.
 
-Compute (incr (incr (B1 Z)))
+Compute allOnes (B1 (B1 Z)).
+
+Compute (incr (B1 Z)).
+Compute ((incr (incr (B1 Z))))
 .
+
+Compute ((incr (B1 (B1 Z)))).
+
 Fixpoint bin_to_nat (m:bin) : nat
   .
 Admitted.
@@ -647,9 +672,11 @@ Qed.
 Example test_bin_incr3 : (incr (B1 (B1 Z))) = B0 (B0 (B1 Z)).
 Proof.
   simpl. reflexivity.
+Qed.
 
 Example test_bin_incr4 : bin_to_nat (B0 (B1 Z)) = 2.
 (* FILL IN HERE *) Admitted.
+
 Example test_bin_incr5 :
         bin_to_nat (incr (B1 Z)) = 1 + bin_to_nat (B1 Z).
 (* FILL IN HERE *) Admitted.
