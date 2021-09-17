@@ -672,13 +672,29 @@ Proof. simpl. reflexivity. Qed.
 Example test_bin_incr6 : incr (B1 (B1 (B1 (B0 (B1 (B0 (B1 (Z)))))))) = B0 (B0 (B0 (B1 (B1 (B0 (B1 Z)))))).
 Proof. simpl. reflexivity. Qed.
 
+Fixpoint bnAUX (m : bin) (bit : nat) : nat :=
+  match m with
+  | Z => 0
+  | B1 Z => 1
+  | B0 Z => 1
+  | B0 n' => bit + bnAUX n' (bit * 2)
+  | B1 n' => bit + bnAUX n' (bit * 2)
+end.
 
-Fixpoint bin_to_nat (m:bin) : nat
-  .
-Admitted.
+Definition bin_to_nat (m:bin) : nat :=
+  bnAUX m 1.
+
+Example test_bin_nat7 : bin_to_nat (B1 (B1 (B1 Z))) = 7.
+Proof.
+  unfold bin_to_nat. unfold bnAUX.
+  TODO
+  simpl.
 
 Example test_bin_nat1 : bin_to_nat (B0 (B1 Z)) = 2.
-(* FILL IN HERE *) Admitted.
+Proof.
+  simpl.
+  unfold bin_to_nat. unfold bnAUX.
+
 
 Example test_bin_nat2 :
         bin_to_nat (incr (B1 Z)) = 1 + bin_to_nat (B1 Z).
