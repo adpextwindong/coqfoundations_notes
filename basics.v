@@ -675,30 +675,46 @@ Proof. simpl. reflexivity. Qed.
 Fixpoint bnAUX (m : bin) (bit : nat) : nat :=
   match m with
   | Z => 0
-  | B1 Z => 1
-  | B0 Z => 1
-  | B0 n' => bit + bnAUX n' (bit * 2)
+  | B1 Z => bit
+  | B0 Z => bit
+  | B0 n' => bnAUX n' (bit * 2)
   | B1 n' => bit + bnAUX n' (bit * 2)
 end.
 
 Definition bin_to_nat (m:bin) : nat :=
   bnAUX m 1.
 
+Example test_bna_0 : bin_to_nat (Z) = 0.
+Proof. unfold bin_to_nat. unfold bnAUX. reflexivity. Qed.
+
+Example test_bna_1 : bin_to_nat (B1 Z) = 1.
+Proof. unfold bin_to_nat. unfold bnAUX. reflexivity. Qed.
+
+Example test_bna_3 : bin_to_nat (B1 (B1 Z)) = 3.
+Proof. unfold bin_to_nat. unfold bnAUX. reflexivity. Qed.
+
+Example test_bna_4 : bin_to_nat (B0 (B0 (B1 Z))) = 4.
+Proof. unfold bin_to_nat. unfold bnAUX. reflexivity. Qed.
+
+
 Example test_bin_nat7 : bin_to_nat (B1 (B1 (B1 Z))) = 7.
 Proof.
   unfold bin_to_nat. unfold bnAUX.
-  TODO
   simpl.
+  reflexivity.
+Qed.
 
 Example test_bin_nat1 : bin_to_nat (B0 (B1 Z)) = 2.
 Proof.
   simpl.
   unfold bin_to_nat. unfold bnAUX.
-
+  reflexivity.
+Qed.
 
 Example test_bin_nat2 :
         bin_to_nat (incr (B1 Z)) = 1 + bin_to_nat (B1 Z).
-(* FILL IN HERE *) Admitted.
+Proof. unfold bin_to_nat. unfold bnAUX. reflexivity. Qed.
+
 Example test_bin_nat3 :
         bin_to_nat (incr (incr (B1 Z))) = 2 + bin_to_nat (B1 Z).
-(* FILL IN HERE *) Admitted.
+Proof. unfold bin_to_nat. unfold bnAUX. reflexivity. Qed.
