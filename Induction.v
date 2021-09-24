@@ -116,3 +116,109 @@ Search (S _ + _ = S _).
 Search (_ + _ = S _ + _ ).
 
 *)
+
+(*
+Exercise: 2 stars, standard (double_plus)
+Consider the following function, which doubles its argument:
+Use induction to prove this simple fact about double:
+*)
+Fixpoint double (n:nat) :=
+  match n with
+  | O => O
+  | S n' => S (S (double n'))
+  end.
+
+Lemma double_plus : forall n, double n = n + n .
+Proof.
+  intro n.
+  induction n as [| n' IHn'].
+  - unfold double. simpl. reflexivity.
+  - simpl.
+    apply eq_S.
+    rewrite -> PeanoNat.Nat.add_succ_r.
+    apply eq_S.
+    rewrite -> IHn'. reflexivity.
+Qed.
+
+Fixpoint even (n: nat) : bool :=
+  match n with
+  | O => true
+  | S (O) => false
+  | S (S (n)) => even n
+end.
+
+(* Exercise: 2 stars, standard, optional (even_S)
+
+One inconvenient aspect of our definition of even n is the recursive call on n - 2. This makes proofs about even n harder when done by induction on n, since we may need an induction hypothesis about n - 2. The following lemma gives an alternative characterization of even (S n) that works better with induction: *)
+
+
+Lemma doubleEven : forall n : nat,
+  even (S (S n)) = even n.
+Proof.
+  intros n. induction n as [| n' IHn'].
+  - simpl. reflexivity.
+  - simpl. reflexivity.
+Qed.
+
+Lemma doubleNegb : forall n : nat,
+  negb (negb (even n)) = even n.
+Proof.
+  intros n. induction n.
+  - simpl. reflexivity.
+  - destruct (even (S n)).
+    simpl. reflexivity.
+    simpl. reflexivity.
+Qed.
+
+
+Lemma evenSOut : forall n : nat,
+  even (S n) = negb (even n).
+Proof.
+  intros n.
+  induction n.
+  - simpl. reflexivity.
+  - rewrite doubleEven.
+    rewrite -> IHn.
+    rewrite <- doubleEven.
+    rewrite -> doubleEven.
+    rewrite doubleNegb.
+    reflexivity.
+Qed.
+
+
+Search (_ = _ -> S _ = S _).
+
+Lemma dropNegb_s : forall n : nat,
+   negb (even (S n)) = even n.
+Proof.
+  intros n. induction n as [| n' IHn'].
+  - simpl. reflexivity.
+  - rewrite -> doubleEven.
+    rewrite -> evenSOut.
+    destruct n'.
+    + simpl. reflexivity.
+    + simpl. reflexivity.
+Qed.
+
+Theorem even_S : forall n : nat,
+  even (S n) = negb (even n).
+Proof.
+  intro n.
+  induction n as [| n' IHn'].
+  - simpl. reflexivity.
+  - rewrite -> doubleEven.
+    rewrite -> dropNegb_s.
+    reflexivity.
+Qed.
+
+(* Destruct vs Induction tactic
+
+Destruct forces you to analyse indepedent cases.
+
+For example if you have an unknown Bool, you can destruct on it to do equational reasoning in both the true and false case.
+
+Induction however is used when you need to exhaust cases that destruct can't handle.
+
+For example if you destruct on a peano nat you'll corner yourself into destructing on n'. This leads you to an identical subgoal if you don't use induction.
+
+With Induction you can rejigger your goal into a form that you can apply the induction hypothesis. *)
