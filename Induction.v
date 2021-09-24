@@ -95,9 +95,24 @@ Search (_ + S _).
 Search (_ + 0).
 *)
 
-  (* FILL IN HERE *) Admitted.
-Theorem add_assoc : ∀ n m p : nat,
+Theorem add_assoc : forall n m p : nat,
   n + (m + p) = (n + m) + p.
 Proof.
-  (* FILL IN HERE *) Admitted.
-☐
+  intros.
+  induction n as [| n' IHn'].
+  - reflexivity.
+  - destruct n'.
+    + simpl. reflexivity.
+    + simpl.
+      apply eq_S.
+      repeat rewrite <- plus_Sn_m.
+      rewrite -> IHn'. reflexivity.
+Qed.
+
+(*Searchs that resulted the used theorems
+
+Search (S (_ + _ + _) = S _ + _).
+Search (S _ + _ = S _).
+Search (_ + _ = S _ + _ ).
+
+*)
