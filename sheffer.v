@@ -176,3 +176,10 @@ Proof.
   - destruct b. auto. auto.
   - destruct b. auto. auto.
 Qed.
+
+Require Import ExtrHaskellBasic.
+Extraction Language Haskell.
+Extraction "nandeqb.hs" nandb_eqb.
+
+(* TODO write the props in set. https://stackoverflow.com/questions/27175971/generating-haskell-code-from-coq-logical-or-arity-value-used#comment42848956_27176986*)
+Require Import ExtrHaskellBasic.
