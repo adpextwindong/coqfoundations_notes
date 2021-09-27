@@ -71,3 +71,45 @@ Qed.
 
 Search (negb _ = true).
 Search (negb _ || negb _).
+
+
+Search (_ -> _ = negb _ -> negb _).
+
+Theorem contra:
+  forall p q: bool, implb (implb p q) (implb (negb q) (negb p)) = true.
+Proof.
+  unfold negb, implb.
+  destruct p.
+  - destruct q. auto. auto.
+  - destruct q. auto. auto.
+Qed.
+
+Theorem demorgan_andb_orb:
+  forall a b: bool,
+    implb (negb (andb a b))
+          (orb (negb a) (negb b)) = true.
+Proof.
+  intros a b.
+  unfold negb, implb, orb, andb.
+  destruct a.
+  - destruct b. auto. auto.
+  - auto.
+Qed.
+
+Lemma mid:
+  forall a: bool, andb a (negb a) = false.
+Proof.
+  intro a. destruct a. auto. auto. Qed.
+
+Theorem exercise8:
+  forall a b c: bool,
+    implb (implb (andb c b) a)
+          (implb (negb a) (orb (negb c) (negb b))) = true.
+Proof.
+  intros a b c.
+  repeat rewrite <- implb_curry.
+  rewrite <- negb_andb.
+  destruct (c && b).
+  - simpl. rewrite -> mid. auto.
+  - simpl. destruct a. auto. auto.
+Qed.
