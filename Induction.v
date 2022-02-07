@@ -1,5 +1,5 @@
 From LF Require Export Basics.
-Require Import Coq.Program.Tactics.
+
 
 (* Reflexivity can't be applied since n in n + 0 is an arbitrary unknown, so match on + can't be simpl. *)
 
@@ -224,12 +224,14 @@ For example if you destruct on a peano nat you'll corner yourself into destructi
 With Induction you can rejigger your goal into a form that you can apply the induction hypothesis. *)
 
 Lemma plus0 (x: nat) : x + 0 = x.
+Proof.
   induction x.
   - auto.
   - simpl. rewrite IHx. reflexivity.
 Qed.
 
 Theorem commutnat (x y:nat) : x + y = y + x.
+Proof.
   induction x as [| x' IHx'].
   - simpl. rewrite plus0. reflexivity.
   - simpl. rewrite -> IHx'.
@@ -279,3 +281,85 @@ By induction on n
 
   which is immediate by the induction hyptohesis
 *)
+
+Theorem leb_refl : forall n : nat,
+  (n <= n).
+Proof.
+  intros n.
+  apply le_n.
+Qed.
+
+(*
+To see whats applied by auto.
+
+Show Proof.
+auto.
+Show Proof.
+*)
+
+Notation "x =? y" := (eqb x y) (at level 70) : nat_scope.
+Notation "x <=? y" := (leb x y) (at level 70) : nat_scope.
+
+
+Theorem zero_neqb_S : forall n : nat,
+  (0 =? (S n)) = false.
+Proof.
+  reflexivity.
+Qed.
+
+Theorem andb_false_r : forall b: bool,
+  andb b false = false.
+Proof.
+  intro b; destruct b; reflexivity.
+Qed.
+
+Theorem plus_leb_compat_l : forall n m p : nat,
+  n <=? m = true -> (p + n) <=? (p + m) = true.
+Proof.
+  intros.
+  induction p.
+  - simpl. apply H.
+  - simpl. apply IHp.
+Qed.
+
+Theorem S_neqb_0 : forall n: nat,
+  (S n) =? 0 = false.
+Proof.
+  reflexivity.
+Qed.
+
+Theorem mult_1_l : forall n: nat,
+  1 * n = n.
+Proof.
+  simpl. apply plus0.
+Qed.
+
+Theorem all3_spec : forall b c : bool,
+  orb
+    (andb b c)
+    (orb (negb b)
+         (negb c))
+  = true.
+Proof.
+  intros.
+  destruct b; simpl; destruct c; reflexivity.
+Qed.
+
+Theorem plus_assoc : forall n m p : nat,
+  n + (m + p) = (n + m) + p.
+Proof.
+  intros. induction n. reflexivity.
+          simpl. rewrite <- IHn. reflexivity.
+Qed.
+
+Theorem mult_plus_distr_r : forall n m p: nat,
+  (n + m) * p = (n * p) + (m * p).
+Proof.
+  intros.
+  induction n.
+  - auto.
+  - simpl. rewrite IHn. apply plus_assoc.
+Qed.
+
+
+

@@ -1,3 +1,4 @@
+
 (* Introducing a data type with the inductive *)
 
 Inductive day : Type :=

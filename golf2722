@@ -3,6 +3,7 @@ Require Import Coq.Init.Peano.
 
 Theorem test (x y z : Prop) :
   (x -> y) -> (y -> z) -> (x -> z).
+Proof.
   intros.
   apply H0.
   apply H.
@@ -12,6 +13,7 @@ Qed.
 
 
 Lemma yplusSuccX (x y : nat) : S(y + x) = y + S x.
+Proof.
   induction y.
   - auto.
   - simpl. rewrite IHy. auto.
@@ -20,6 +22,7 @@ Qed.
 
 Theorem assocNat : forall n m p : nat,
   n + (m + p) = (n + m) + p.
+Proof.
   intros n m p.
   induction n.
   - simpl. reflexivity.
