@@ -222,3 +222,60 @@ Induction however is used when you need to exhaust cases that destruct can't han
 For example if you destruct on a peano nat you'll corner yourself into destructing on n'. This leads you to an identical subgoal if you don't use induction.
 
 With Induction you can rejigger your goal into a form that you can apply the induction hypothesis. *)
+
+Lemma plus0 (x: nat) : x + 0 = x.
+  induction x.
+  - auto.
+  - simpl. rewrite IHx. reflexivity.
+Qed.
+
+Theorem commutnat (x y:nat) : x + y = y + x.
+  induction x as [| x' IHx'].
+  - simpl. rewrite plus0. reflexivity.
+  - simpl. rewrite -> IHx'.
+           rewrite <- plus_n_Sm. reflexivity.
+Qed.
+
+(*
+For any x y
+ x + y = y + x
+
+By induction on x.
+- Assume x = 0
+    0 + y = y + 0
+By definition of plus
+  y = y + 0
+By the lemma that x + 0 = x
+  y = y
+
+- Assume x = S x', where
+    x' + y = y + x'
+  we must show that
+    S x' + y = y + S x'
+  By definition of plus on the lhs
+    S (x' + y) = y + S x'
+  Then by the induction hypothesis on the lhs
+    S (x' + y) = y + S x'
+  And by the definition of plus on the rhs
+    S (y + x') = S (y + x')
+Qed.
+*)
+
+(*
+For any n,
+ (n =? n) = true
+By induction on n
+- Assume n = 0
+  (0 =? 0) = true
+  Is trivial by defn of =?
+
+- Assume n = S n', where
+    (n' =? n')
+  We must show that
+    (S n') =? (S n') = true
+
+  By definition of =?, this follows from
+    n' =? n' = true
+
+  which is immediate by the induction hyptohesis
+*)
